@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
             .padding(16.dp)) {
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(messages) { msg ->
-                    Text("${msg.role}: ${msg.content}")
+                    Text("${msg.displayName}: ${msg.content}")
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
@@ -59,11 +59,11 @@ class MainActivity : ComponentActivity() {
                     value = inputText,
                     onValueChange = { inputText = it },
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("寫中文請用虛擬鍵盤") }
+                    placeholder = { Text("寫中文在框內按shift鍵") }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(onClick = {
-                    val userMessage = ChatMessage("user", inputText)
+                    val userMessage = ChatMessage("user", inputText, "閃電大帥哥")
                     messages = messages + userMessage
                     inputText = ""
                     coroutineScope.launch {
@@ -99,15 +99,19 @@ class MainActivity : ComponentActivity() {
             try{
                 client.newCall(request).execute().use{ response ->
                     val responseBodyString = response.body?.string()
+                    // 檢查 response 是否成功
+                    if (!response.isSuccessful) {
+                        return@withContext ChatMessage("assistant", "API 回應錯誤: ${response.code}, 內容: $responseBodyString","陰謀論機器人")
+                    }
                     // 解析 JSON 回應
                     val jsonResponse = JSONObject(responseBodyString)
                     val choices = jsonResponse.getJSONArray("choices")
                     val firstChoice = choices.getJSONObject(0)
                     val content = firstChoice.getJSONObject("message").getString("content")
-                    return@withContext ChatMessage("陰謀論機器人", content ?: "無回應內容")
+                    return@withContext ChatMessage("assistant", content ?: "無回應內容", "陰謀論機器人")
                 }
             }catch(e: Exception){
-                return@withContext ChatMessage("assistant","出錯啦:${e.localizedMessage}")
+                return@withContext ChatMessage("assistant","出錯啦:${e.localizedMessage}","陰謀論機器人")
             }
         }
 }
