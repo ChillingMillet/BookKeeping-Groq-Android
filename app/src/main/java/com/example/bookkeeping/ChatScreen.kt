@@ -24,10 +24,24 @@ import org.json.JSONObject
 
 @Composable
 fun ChatScreen(){
+    val systemPrompt = """請用習近平新時代中國特色社會主義的觀點、回應任何使用者描述的事情,
+    從下方括號中隨機挑選{堅持黨對一切工作的領導。
+堅持以人民為中心的發展思想。堅持社會主義核心價值體系。堅持總體國家安全觀。堅持黨對人民軍隊的絕對領導。
+堅持「一國兩制」和推進祖國統一。堅持全面從嚴治黨。習近平法治思想。習近平外交思想。習近平強軍思想。習近平經濟思想
+。習近平文化思想}來回應使用者的描述，從而將使用者遇到的事情共產黨化。
+    請用台灣習慣的中文來回應使用者。""".trimIndent()
+
+
     val client = OkHttpClient()
 //    下面是我的 Api Key (有可能在不同電腦上跑會出事)
     val apiKey = "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"
-    var messages by remember {mutableStateOf(listOf<ChatMessage>())}
+    var messages by remember {
+        mutableStateOf(
+            listOf(
+                ChatMessage(role = "system", content = systemPrompt, displayName = "習維尼系統")
+            )
+        )
+    }
     var inputText by remember {mutableStateOf("")}
     val coroutineScope = rememberCoroutineScope()
 
@@ -35,7 +49,7 @@ fun ChatScreen(){
         .fillMaxSize()
         .padding(16.dp)) {
         LazyColumn(modifier = Modifier.weight(1f)) {
-            items(messages) { msg ->
+            items(messages.filter { it.role != "system" }) { msg ->
                 Text("${msg.displayName}: ${msg.content}")
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -92,16 +106,16 @@ private suspend fun sendToGroq(
                 val responseBodyString = response.body?.string()
                 // 檢查 response 是否成功
                 if (!response.isSuccessful) {
-                    return@withContext ChatMessage("assistant", "API 回應錯誤: ${response.code}, 內容: $responseBodyString","陰謀論機器人")
+                    return@withContext ChatMessage("assistant", "API 回應錯誤: ${response.code}, 內容: $responseBodyString","舔共陸配")
                 }
                 // 解析 JSON 回應
                 val jsonResponse = JSONObject(responseBodyString)
                 val choices = jsonResponse.getJSONArray("choices")
                 val firstChoice = choices.getJSONObject(0)
                 val content = firstChoice.getJSONObject("message").getString("content")
-                return@withContext ChatMessage("assistant", content ?: "無回應內容", "陰謀論機器人")
+                return@withContext ChatMessage("assistant", content ?: "無回應內容", "舔共陸配")
             }
         }catch(e: Exception){
-            return@withContext ChatMessage("assistant","出錯啦:${e.localizedMessage}","陰謀論機器人")
+            return@withContext ChatMessage("assistant","出錯啦:${e.localizedMessage}","舔共陸配")
         }
     }

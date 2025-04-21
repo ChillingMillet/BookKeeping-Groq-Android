@@ -45,14 +45,10 @@ class MainActivity : ComponentActivity(){
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = "main"){
             composable("main"){ChoosingScreen(navController)}
-            composable("chat"){ ChatScreen() } // 呼叫 BakingScreen()
+            composable("chat"){ ChatScreen() } // 呼叫 ChatScreen()
+//            composable("pics"){ PicsScreen() } // 呼叫 PicsScreen()
         }
     }
-//
-//    @Composable
-//    fun ChatActivityUI() {
-//        BakingScreen()
-//    }
 
     @Composable
     fun ChoosingScreen(navController: NavHostController){
@@ -63,15 +59,25 @@ class MainActivity : ComponentActivity(){
             verticalArrangement = Arrangement.Center
         ){
             Button(onClick = {navController.navigate("chat")},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Blue,
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier.fillMaxWidth()
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Blue,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier.fillMaxWidth()
 
-                ) {
-                Text("選擇對話機器人")
+            ) {
+                Text("习近平新时代中国特色社会主义思想機器人")
             }
+//            Button(onClick = {navController.navigate("pics")},
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = Color.Blue,
+//                    contentColor = Color.White
+//                ),
+//                modifier = Modifier.fillMaxWidth()
+//
+//            ) {
+//                Text("誰是習錦平")
+//            }
         }
     }
 
