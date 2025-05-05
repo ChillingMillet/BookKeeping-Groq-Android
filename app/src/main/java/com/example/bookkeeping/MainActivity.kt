@@ -23,6 +23,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.bookkeeping.ui.theme.BookKeepingTheme //?
+import androidx.compose.foundation.Image
+import androidx.compose.runtime.*
+import androidx.compose.ui.res.painterResource
+import kotlinx.coroutines.delay
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.unit.dp
+
+
 
 class MainActivity : ComponentActivity(){
 
@@ -45,8 +55,9 @@ class MainActivity : ComponentActivity(){
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = "main"){
             composable("main"){ChoosingScreen(navController)}
-            composable("chat"){ ChatScreen() } // 呼叫 ChatScreen()
+            composable("chat"){ ChatScreen(navController) } // 呼叫 ChatScreen()
 //            composable("pics"){ PicsScreen() } // 呼叫 PicsScreen()
+            composable("webview"){ WebViewScreen("https://zh.wikipedia.org/zh-tw/%E8%BE%B1%E5%8C%85%E6%96%87%E5%8C%96") }
         }
     }
 
@@ -68,16 +79,42 @@ class MainActivity : ComponentActivity(){
             ) {
                 Text("习近平新时代中国特色社会主义思想機器人")
             }
-//            Button(onClick = {navController.navigate("pics")},
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = Color.Blue,
-//                    contentColor = Color.White
-//                ),
-//                modifier = Modifier.fillMaxWidth()
-//
-//            ) {
-//                Text("誰是習錦平")
-//            }
+
+//            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(onClick = {navController.navigate("webview")},
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Blue,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier.fillMaxWidth()
+
+            ) {
+                Text("為何要辱习近平 ?")
+            }
+
+//            Spacer(modifier = Modifier.height(32.dp))
+
+            // ✅ 圖片切換區塊
+            var isFirstImage by remember { mutableStateOf(true) }
+
+            LaunchedEffect(Unit) {
+                while (true) {
+                    delay(2000L) // 每兩秒切換一次
+                    isFirstImage = !isFirstImage
+                }
+            }
+
+            val imageResId = if (isFirstImage) R.drawable.xi_1 else R.drawable.xi_2
+
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = "習近平",
+                modifier = Modifier
+                    .fillMaxWidth()  // 寬度填滿
+                    .height(600.dp)  // 高度設置為 300.dp
+            )
+
         }
     }
 

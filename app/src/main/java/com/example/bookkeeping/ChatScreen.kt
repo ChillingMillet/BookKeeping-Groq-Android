@@ -1,3 +1,4 @@
+// 有時模擬器會當掉，需要左邊選Device manager，中止執行後再重新執行
 package com.example.bookkeeping
 
 import android.os.Bundle
@@ -11,19 +12,18 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
-
-
-
+import androidx.compose.ui.Alignment
 
 
 @Composable
-fun ChatScreen(){
+fun ChatScreen(navController: NavController){ ///
     val systemPrompt = """請用習近平新時代中國特色社會主義的觀點、回應任何使用者描述的事情,
     從下方括號中隨機挑選{堅持黨對一切工作的領導。
 堅持以人民為中心的發展思想。堅持社會主義核心價值體系。堅持總體國家安全觀。堅持黨對人民軍隊的絕對領導。
@@ -48,6 +48,22 @@ fun ChatScreen(){
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
+        // 回上一頁按鈕
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Button(onClick = {
+                messages = listOf() // 清除對話
+                navController.popBackStack() // 回上一頁
+            }) {
+                Text("← 返回")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+        ////
+
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(messages.filter { it.role != "system" }) { msg ->
                 Text("${msg.displayName}: ${msg.content}")
@@ -67,6 +83,7 @@ fun ChatScreen(){
                 messages = messages + userMessage
                 inputText = ""
                 coroutineScope.launch {
+
                     val aiResponse = sendToGroq(client,apiKey, messages + userMessage)
                     messages = messages + aiResponse
                 }
@@ -77,6 +94,8 @@ fun ChatScreen(){
     }
 }
 //
+
+
 private suspend fun sendToGroq(
     client: OkHttpClient,
     apiKey: String,
@@ -106,16 +125,16 @@ private suspend fun sendToGroq(
                 val responseBodyString = response.body?.string()
                 // 檢查 response 是否成功
                 if (!response.isSuccessful) {
-                    return@withContext ChatMessage("assistant", "API 回應錯誤: ${response.code}, 內容: $responseBodyString","舔共陸配")
+                    return@withContext ChatMessage("assistant", "API 回應錯誤: ${response.code}, 內容: $responseBodyString","小粉紅")
                 }
                 // 解析 JSON 回應
                 val jsonResponse = JSONObject(responseBodyString)
                 val choices = jsonResponse.getJSONArray("choices")
                 val firstChoice = choices.getJSONObject(0)
                 val content = firstChoice.getJSONObject("message").getString("content")
-                return@withContext ChatMessage("assistant", content ?: "無回應內容", "舔共陸配")
+                return@withContext ChatMessage("assistant", content ?: "無回應內容", "小粉紅")
             }
         }catch(e: Exception){
-            return@withContext ChatMessage("assistant","出錯啦:${e.localizedMessage}","舔共陸配")
+            return@withContext ChatMessage("assistant","出錯啦:${e.localizedMessage}","小粉紅")
         }
     }
