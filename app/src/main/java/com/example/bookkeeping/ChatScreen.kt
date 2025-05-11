@@ -21,9 +21,12 @@ import org.json.JSONArray
 import org.json.JSONObject
 import androidx.compose.ui.Alignment
 
+// 要記得去https://console.groq.com/keys更新API KEY
+// 電腦休眠時 記得要重開模擬器
 
 @Composable
 fun ChatScreen(navController: NavController){ ///
+
     val systemPrompt = """請用習近平新時代中國特色社會主義的觀點、回應任何使用者描述的事情,
     從下方括號中隨機挑選{堅持黨對一切工作的領導。
 堅持以人民為中心的發展思想。堅持社會主義核心價值體系。堅持總體國家安全觀。堅持黨對人民軍隊的絕對領導。
@@ -34,7 +37,8 @@ fun ChatScreen(navController: NavController){ ///
 
     val client = OkHttpClient()
 //    下面是我的 Api Key (有可能在不同電腦上跑會出事)
-    val apiKey = "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"
+    val apiKey = "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"
+
     var messages by remember {
         mutableStateOf(
             listOf(
@@ -61,6 +65,7 @@ fun ChatScreen(navController: NavController){ ///
             }
         }
 
+        //////
         Spacer(modifier = Modifier.height(8.dp))
         ////
 
