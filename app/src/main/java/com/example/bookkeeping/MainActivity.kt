@@ -80,7 +80,8 @@ class MainActivity : ComponentActivity(){
                 Text("习近平新时代中国特色社会主义思想機器人")
             }
 
-//            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
+
 
             Button(onClick = {navController.navigate("webview")},
                 colors = ButtonDefaults.buttonColors(
@@ -92,6 +93,8 @@ class MainActivity : ComponentActivity(){
             ) {
                 Text("為何要辱习近平 ?")
             }
+
+
 
 //            Spacer(modifier = Modifier.height(32.dp))
 

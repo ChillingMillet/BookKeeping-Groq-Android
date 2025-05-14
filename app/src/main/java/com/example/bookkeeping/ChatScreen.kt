@@ -37,7 +37,7 @@ fun ChatScreen(navController: NavController){ ///
 
     val client = OkHttpClient()
 //    下面是我的 Api Key (有可能在不同電腦上跑會出事)
-    val apiKey = "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"
+    val apiKey = "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"
 
     var messages by remember {
         mutableStateOf(
